@@ -1,0 +1,17 @@
+services:
+  openinsider:
+    build: .
+    environment:
+      - POLL_INTERVAL_HOURS=${POLL_INTERVAL_HOURS:-4}
+      - MIN_EXECUTIVES=${MIN_EXECUTIVES:-3}
+      - MIN_TRANSACTION_VALUE=${MIN_TRANSACTION_VALUE:-200000}
+      - LOOKBACK_DAYS=${LOOKBACK_DAYS:-7}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID}
+      - DEDUP_STATE_PATH=/data/alert_state.json
+    volumes:
+      - openinsider_data:/data
+    restart: unless-stopped
+
+volumes:
+  openinsider_data:
