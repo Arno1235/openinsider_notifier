@@ -96,7 +96,7 @@ def scrape(
     Scrape recent insider transactions from openinsider.com screener.
 
     Returns list of dicts with: ticker, company_name, owner_name, title,
-    transaction_type, value
+    transaction_type, trade_date, value
     """
     end_date = datetime.now()
     start_date = end_date - timedelta(days=lookback_days)
@@ -163,6 +163,7 @@ def scrape(
             "owner_name": data.get("owner_name", ""),
             "title": data.get("title", ""),
             "transaction_type": data.get("transaction_type", ""),
+            "trade_date": data.get("trade_date", ""),
             "value": value,
         })
 

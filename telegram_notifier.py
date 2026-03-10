@@ -1,6 +1,7 @@
 """Send Telegram messages for insider cluster alerts."""
 
 import logging
+from datetime import datetime
 from typing import Any
 
 import requests
@@ -8,6 +9,21 @@ import requests
 logger = logging.getLogger(__name__)
 
 TELEGRAM_API = "https://api.telegram.org/bot{token}/sendMessage"
+
+TRANSACTION_TYPE_LABELS = {"P": "BUY", "S": "SELL"}
+
+
+def _format_date(date_str: str) -> str:
+    """Parse and format date string for display (YYYY-MM-DD)."""
+    if not date_str:
+        return "Unknown date"
+    for fmt in ("%Y-%m-%d", "%m/%d/%Y", "%d/%m/%Y"):
+        try:
+            dt = datetime.strptime(date_str.strip(), fmt)
+            return dt.strftime("%Y-%m-%d")
+        except ValueError:
+            continue
+    return date_str
 
 
 def _format_value(value: float) -> str:
@@ -36,9 +52,15 @@ def format_alert_message(alert: dict[str, Any]) -> str:
         title = e.get("title", "")
         val = e.get("total_value", 0)
         if title:
-            lines.append(f"• {name} ({title}): {_format_value(val)}")
+            lines.append(f"• {name} ({title}): {_format_value(val)} total")
         else:
-            lines.append(f"• {name}: {_format_value(val)}")
+            lines.append(f"• {name}: {_format_value(val)} total")
+        for tx in e.get("transactions", []):
+            date_str = _format_date(tx.get("trade_date", ""))
+            tx_type = tx.get("transaction_type", "")
+            label = TRANSACTION_TYPE_LABELS.get(tx_type, tx_type or "?")
+            tx_val = tx.get("value", 0)
+            lines.append(f"  - {date_str}: {label} {_format_value(tx_val)}")
     lines.extend(["", f"Total: {_format_value(total)}"])
     return "\n".join(lines)
 
