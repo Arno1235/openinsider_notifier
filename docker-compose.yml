@@ -13,5 +13,21 @@ services:
       - openinsider_data:/data
     restart: unless-stopped
 
+  backtest:
+    build: .
+    command: >
+      streamlit run backtest_app.py
+      --server.port=8501
+      --server.address=0.0.0.0
+      --server.headless=true
+      --browser.gatherUsageStats=false
+    ports:
+      - "8501:8501"
+    volumes:
+      - backtest_cache:/app/.cache
+    restart: unless-stopped
+    profiles: ["backtest"]
+
 volumes:
   openinsider_data:
+  backtest_cache:

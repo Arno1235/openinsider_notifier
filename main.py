@@ -14,8 +14,7 @@ from config import (
     MIN_EXECUTIVES,
     MIN_TRANSACTION_VALUE,
     POLL_INTERVAL_HOURS,
-    TELEGRAM_BOT_TOKEN,
-    TELEGRAM_CHAT_ID,
+    require_telegram_credentials,
 )
 from scraper import scrape
 from telegram_notifier import notify_alerts
@@ -107,13 +106,15 @@ def run_poll() -> None:
         logger.info("All %d alerts already sent (dedup)", len(alerts))
         return
 
-    count = notify_alerts(new_alerts, TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID)
+    token, chat_id = require_telegram_credentials()
+    count = notify_alerts(new_alerts, token, chat_id)
     logger.info("Sent %d/%d new alerts via Telegram", count, len(new_alerts))
     _save_dedup_state(state_path, sent)
 
 
 def main() -> None:
     """Run scheduler loop."""
+    require_telegram_credentials()
     logger.info(
         "OpenInsider alert bot started: poll every %dh, min %d executives, min $%s",
         POLL_INTERVAL_HOURS,
