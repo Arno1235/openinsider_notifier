@@ -34,7 +34,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name
 
 st.set_page_config(
     page_title="OpenInsider Backtest",
-    page_icon="",
+    page_icon="📈",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -189,6 +189,16 @@ if not run_clicked:
         "Historical insider data is cached to `.cache/insiders/` and price data to `.cache/prices/` "
         "to keep subsequent runs fast."
     )
+    f1, f2, f3, f4 = st.columns(4)
+    f1.markdown("### Signals\nCluster buys/sells, single large buys, and CEO/CFO/Chair purchases — mix any combination.")
+    f2.markdown("### Realistic fills\nEntry delay, open/close fills, slippage, commissions, stops, and holding periods.")
+    f3.markdown("### Sizing\nEqual-weight, fixed dollar, or percent of equity, with a max-position cap.")
+    f4.markdown("### vs S&P 500\nCAGR, Sharpe, Sortino, alpha/beta, drawdowns, monthly heatmaps, and every trade.")
+    st.markdown("#### Result tabs")
+    t1, t2, t3 = st.columns(3)
+    t1.markdown("- **Overview** — KPIs vs the benchmark\n- **Equity curve** — growth of $1 + exposure")
+    t2.markdown("- **Drawdown** — underwater plot\n- **Monthly returns** — year × month heatmap")
+    t3.markdown("- **Trades** — round-trips, CSV, PnL histogram\n- **Signals** — every derived / skipped signal")
     st.stop()
 
 
